@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest --verbose --runInBand --testLocationInResults",
+    "test": "jest -r dotenv/config --verbose --runInBand --testLocationInResults",
     "test:watch": "npm run test -- --watch",
     "start": "node server.js",
     "start:watch": "nodemon server.js"
@@ -25,9 +25,11 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "chance": "^1.1.6",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb-memory-server-core": "^6.6.4",
     "mongoose": "^5.10.0",
     "node-fetch": "^2.6.0",
     "superagent": "^6.0.0"

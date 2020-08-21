@@ -1,5 +1,3 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const mongod = new MongoMemoryServer();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 
@@ -9,25 +7,24 @@ const TopSearch = require('../lib/models/TopSearch');
 
 
 describe('top search routes', () => {
-  beforeAll(async() => {
-    const uri = await mongod.getUri();
-    return connect(uri);
+  beforeAll(() => {
+    return connect();
   });
   
   beforeEach(() => {
     return mongoose.connection.dropDatabase();
   });
   
-  afterAll(async() => {
-    await mongoose.connection.close();
-    return mongod.stop();
+  afterAll(() => {
+    return mongoose.connection.close();
+  
   });
 
   it('POST the common and scientific name of a plant', () => {
     return request(app)
       .post('/api/v1/topsearch')
       .send({
-        //this plantID is hard coded right now 
+        //this plantID is hard coded right now
         plantID: '12345',
         common_name: 'Fern',
         scientific_name: 'Fernius'
@@ -40,6 +37,32 @@ describe('top search routes', () => {
           scientific_name: 'Fernius',
           __v: 0
         });
+      });
+  });
+
+  it('searches for a query and grabs it through GET', async() => {
+    
+    await request(app) 
+      .post('/api/v1/topsearch')
+      .send({
+      //this plantID is hard coded right now
+        plantID: '12345',
+        common_name: 'Fern',
+        scientific_name: 'Fernius'
+      });
+  
+    return request(app)
+      .get('/api/v1/topsearch')
+      .then(res => {
+        expect(res.body).toEqual([
+          { _id: expect.any(String),
+            plantID: '12345',
+            common_name: 'Fern',
+            scientific_name: 'Fernius',
+            __v: 0
+
+          }
+        ]);
       });
   });
 });
