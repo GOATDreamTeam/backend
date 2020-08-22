@@ -8,7 +8,7 @@ const TopSearch = require('../lib/models/TopSearch');
 
 describe('top search routes', () => {
   beforeAll(() => {
-    return connect();
+    return connect('mongodb://localhost:27017/my-test-db');
   });
   
   beforeEach(() => {
