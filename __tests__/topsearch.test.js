@@ -3,12 +3,11 @@ const connect = require('../lib/utils/connect');
 
 const request = require('supertest');
 const app = require('../lib/app');
-const TopSearch = require('../lib/models/TopSearch');
 
 
 describe('top search routes', () => {
   beforeAll(() => {
-    return connect('mongodb://localhost:27017/my-test-db');
+    return connect();
   });
   
   beforeEach(() => {
@@ -24,15 +23,14 @@ describe('top search routes', () => {
     return request(app)
       .post('/api/v1/topsearch')
       .send({
-        //this plantID is hard coded right now
-        plantID: '12345',
+        image_url: 'www.test.com',
         common_name: 'Fern',
         scientific_name: 'Fernius'
       })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.anything(),
-          plantID: '12345',
+          image_url: 'www.test.com',
           common_name: 'Fern',
           scientific_name: 'Fernius',
           __v: 0
@@ -45,8 +43,7 @@ describe('top search routes', () => {
     await request(app) 
       .post('/api/v1/topsearch')
       .send({
-      //this plantID is hard coded right now
-        plantID: '12345',
+        image_url: 'www.test.com',
         common_name: 'Fern',
         scientific_name: 'Fernius'
       });
@@ -56,11 +53,33 @@ describe('top search routes', () => {
       .then(res => {
         expect(res.body).toEqual([
           { _id: expect.any(String),
-            plantID: '12345',
+            image_url: 'www.test.com',
             common_name: 'Fern',
             scientific_name: 'Fernius',
             __v: 0
 
+          }
+        ]);
+      });
+  });
+
+  it('GETs all images', async() => {
+    
+    await request(app) 
+      .post('/api/v1/topsearch/images')
+      .send({
+        image_url: 'www.test.com',
+        common_name: 'Fern',
+        scientific_name: 'Fernius'
+      });
+  
+    return request(app)
+      .get('/api/v1/topsearch/images')
+      .then(res => {
+        expect(res.body).toEqual([
+          { _id: expect.any(String),
+            image_url: 'www.test.com',
+            __v: 0
           }
         ]);
       });
