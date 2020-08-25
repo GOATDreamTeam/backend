@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
 
@@ -7,7 +8,7 @@ const app = require('../lib/app');
 
 describe('top search routes', () => {
   beforeAll(() => {
-    return connect();
+    return connect(process.env.MONGODB_URI);
   });
   
   beforeEach(() => {
@@ -21,11 +22,11 @@ describe('top search routes', () => {
 
   it('POST the common and scientific name of a plant', () => {
     return request(app)
-      .post('/api/v1/topsearch')
+      .put('/api/v1/topsearch')
       .send({
         image_url: 'www.test.com',
         common_name: 'Fern',
-        scientific_name: 'Fernius'
+        scientific_name: 'Fernius',
       })
       .then(res => {
         expect(res.body).toEqual({
@@ -33,6 +34,7 @@ describe('top search routes', () => {
           image_url: 'www.test.com',
           common_name: 'Fern',
           scientific_name: 'Fernius',
+          incrementCounter: 1,
           __v: 0
         });
       });
@@ -41,7 +43,7 @@ describe('top search routes', () => {
   it('searches for a query and grabs it through GET', async() => {
     
     await request(app) 
-      .post('/api/v1/topsearch')
+      .put('/api/v1/topsearch')
       .send({
         image_url: 'www.test.com',
         common_name: 'Fern',
@@ -56,6 +58,7 @@ describe('top search routes', () => {
             image_url: 'www.test.com',
             common_name: 'Fern',
             scientific_name: 'Fernius',
+            incrementCounter: 1,
             __v: 0
 
           }
@@ -66,7 +69,7 @@ describe('top search routes', () => {
   it('GETs all images', async() => {
     
     await request(app) 
-      .post('/api/v1/topsearch/images')
+      .put('/api/v1/topsearch')
       .send({
         image_url: 'www.test.com',
         common_name: 'Fern',
@@ -78,8 +81,7 @@ describe('top search routes', () => {
       .then(res => {
         expect(res.body).toEqual([
           { _id: expect.any(String),
-            image_url: 'www.test.com',
-            __v: 0
+            image_url: 'www.test.com'
           }
         ]);
       });
