@@ -1,10 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const connect = require('../lib/utils/connect');
-
 const request = require('supertest');
 const app = require('../lib/app');
-
 
 describe('top search routes', () => {
   beforeAll(() => {
@@ -17,7 +15,6 @@ describe('top search routes', () => {
   
   afterAll(() => {
     return mongoose.connection.close();
-  
   });
 
   it('POST the common and scientific name of a plant', () => {
@@ -41,7 +38,6 @@ describe('top search routes', () => {
   });
 
   it('searches for a query and grabs it through GET', async() => {
-    
     await request(app) 
       .put('/api/v1/topsearch')
       .send({
@@ -60,14 +56,12 @@ describe('top search routes', () => {
             scientific_name: 'Fernius',
             incrementCounter: 1,
             __v: 0
-
           }
         ]);
       });
   });
 
   it('GETs all images', async() => {
-    
     await request(app) 
       .put('/api/v1/topsearch')
       .send({
@@ -87,4 +81,3 @@ describe('top search routes', () => {
       });
   });
 });
-
